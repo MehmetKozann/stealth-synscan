@@ -8,7 +8,7 @@
 
 > High-Performance, Modular TCP SYN (Half-Open) Port Scanner in Python
 
-`synscan` is a lightweight, stealthy raw-socket port scanner designed for security engineers, researchers, and penetration testers. It uses half-open SYN scanning, source IP spoofing (decoys), OS fingerprint evasion via dynamic TCP stack parameters, and state checkpointing to enable resumable scans with zero third-party dependencies.
+`synscan` is a lightweight, stealthy raw-socket port scanner designed for security engineers, researchers, and penetration testers. It features half-open SYN scanning, source IP spoofing (decoys), OS fingerprint evasion via dynamic TCP stack parameters, and state checkpointing to enable resumable scans with zero third-party library dependencies.
 
 ---
 
@@ -17,12 +17,12 @@
 Unlike traditional heavy scanning frameworks, `synscan` is designed to be lightweight, modular, and completely self-contained. 
 
 Typical use cases include:
-- **Restricted Linux Environments:** Operating on isolated systems where Python 3 is available but additional software (`nmap`, `libpcap`) or package managers (`apt`, `yum`, `pip`) cannot be installed.
+- **Restricted Linux Environments:** Operating on isolated systems where Python 3 is available but additional third-party software (`libpcap`) or package managers (`apt`, `yum`, `pip`) cannot be installed.
 - **Internal Security Auditing & Red Teaming:** Carrying out authorized network reconnaissance without leaving heavy third-party software footprints.
 - **Educational & Protocol Research:** Exploring low-level raw TCP/IP networking, RFC 1071 checksum calculations, and custom packet construction in readable Python code.
 - **Security Laboratories & CTF Challenges:** Quick deployment in minimal Docker containers or testing environments where fast port discovery is required.
 
-`synscan` focuses on portability and zero external dependencies while providing advanced SYN scanning capabilities.
+`synscan` focuses on portability and zero external library requirements (no `libpcap` or `pip` packages needed) while providing advanced SYN scanning capabilities.
 
 ---
 
@@ -51,33 +51,29 @@ $ sudo python3 synscan.py 192.168.1.1 -p 22,80,443 --confirm --banner
 
 ---
 
-## Feature Comparison
+## Technical Overview & Features
 
-| Feature | `synscan` | Traditional Scanners (e.g. Nmap) |
-|---|:---:|:---:|
-| **100% Pure Python** | ✅ | ❌ (C/C++) |
-| **Zero Third-Party Dependencies (`libpcap`, `pip`)** | ✅ | ❌ (Requires `libpcap`, `pcre`) |
-| **Stealth SYN (Half-Open) Scan** | ✅ | ✅ |
-| **Decoy IP Spoofing (`--decoy`)** | ✅ | ✅ |
-| **Dynamic TCP Stack Fingerprint Evasion** | ✅ | ❌ (Static headers by default) |
-| **JSON State Persistence & Resume** | ✅ | ⚠️ (Text log resume) |
-| **Banner Grabbing (`--banner`)** | ✅ | ✅ |
-| **CIDR Subnet Expansion** | ✅ | ✅ |
+| Capability | `synscan` Implementation Details |
+|---|---|
+| **Python Standard Library Only** | Built exclusively using Python 3 stdlib (`socket`, `struct`, `select`). No `libpcap` or `pip` packages required. |
+| **Stealth SYN (Half-Open) Scan** | Crafts raw IPv4/TCP headers to initiate SYN probes without completing the TCP 3-way handshake. |
+| **Decoy IP Spoofing (`--decoy`)** | Shuffles real source IP with decoy addresses (`IP,IP...` or `RND:N`) per probe burst. |
+| **Dynamic TCP Fingerprint Evasion** | Randomizes TCP header options (MSS, Window Scale, SACK permitted, TTL) from dynamic OS stack profiles per packet. |
+| **State Persistence & Resume** | Auto-saves scan progress incrementally to JSON (`.synscan_state.json`) for resumption (`--resume`). |
+| **Banner Grabbing (`--banner`)** | Establishes full TCP connection post-discovery to retrieve application service banners. |
 
 ---
 
-## Performance & Benchmarks
+## Sample Performance Measurements
 
-Sample execution benchmarks measured across typical local and network environments:
+> **Note:** The measurements below represent sample runs conducted in a controlled local lab environment. Actual duration and packet rates will vary based on target network latency, operating system socket limits, and pacing configuration.
 
-| Target Scope | Port Count | Mode / Flags | Average Duration | Rate (pps) |
+| Target Scope | Port Count | Mode / Flags | Measured Duration | Rate (pps) |
 |---|---|---|---|---|
 | Single Host (`192.168.1.1`) | Top 27 Ports | Standard SYN | ~1.2s | ~22.5 pps |
 | Single Host (`192.168.1.1`) | 1 - 1024 (1024 ports) | `--batch 256` | ~4.8s | ~213 pps |
 | Single Host (`10.0.0.5`) | 1 - 1024 (1024 ports) | `--decoy RND:4` | ~8.2s | ~124 pps |
 | Subnet (`192.168.1.0/24`) | Top 27 Ports | Batch Processing | ~14.5s | ~180 pps |
-
-*Note: Performance depends on network latency, packet pacing, and target responsiveness.*
 
 ---
 
@@ -280,7 +276,7 @@ The Windows kernel disables raw socket packet injection (<code>IPPROTO_RAW</code
 <details>
 <summary><b>3. Does synscan require libpcap or third-party packages?</b></summary>
 <br>
-No. <code>synscan</code> is written using 100% pure Python standard libraries (<code>socket</code>, <code>struct</code>, <code>select</code>). It has zero external dependencies and does not require <code>libpcap</code>, <code>scapy</code>, or <code>pip</code> packages.
+No. <code>synscan</code> is written using 100% pure Python standard libraries (<code>socket</code>, <code>struct</code>, <code>select</code>). It has zero external library dependencies and does not require <code>libpcap</code>, <code>scapy</code>, or <code>pip</code> packages.
 </details>
 
 <details>
