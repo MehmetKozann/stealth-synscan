@@ -260,7 +260,6 @@ sudo python3 synscan.py 192.168.1.1 --resume .synscan_state.json
 - [ ] Multithreaded parallel subnet scanning
 - [ ] UDP port scanning mode (`--udp`)
 - [ ] Passive OS detection engine (`--os-detect`)
-- [ ] HTML & CSV report export formats
 
 ---
 
