@@ -1,8 +1,39 @@
 # synscan
 
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![OS Support](https://img.shields.io/badge/OS-Linux%20%7C%20macOS-brightgreen.svg)](https://www.apple.com/macos/)
+[![Category](https://img.shields.io/badge/Category-Cybersecurity%20%2F%20Network-red.svg)](#)
+[![Build Status](https://github.com/MehmetKozann/stealth-synscan/actions/workflows/ci.yml/badge.svg)](https://github.com/MehmetKozann/stealth-synscan/actions)
+
 > High-Performance, Modular TCP SYN (Half-Open) Port Scanner in Python
 
 `synscan` is a lightweight, stealthy raw-socket port scanner designed for security engineers and penetration testers. It uses half-open SYN scanning, source IP spoofing (decoys), OS fingerprint evasion via dynamic TCP stack parameters, and state checkpointing to enable resumable scans.
+
+---
+
+## Quick Terminal Demo
+
+```text
+  ______   _____   __  ___  _____  ______  ___   _ 
+ / __ \ \ / / \ \ / / / __|/  ___|/ _____// _ \ | |
+ \__ \ \ V /   \ V /  \__ \\ \___ | /    / /_\ \| |
+|___/   |_|     |_|   |___/\____/|/     /_/   \_\_|  v1.0
+          Stealth TCP SYN (Half-Open) Port Scanner
+
+$ sudo python3 synscan.py 192.168.1.1 -p 22,80,443 --confirm --banner
+
+[*] Local IP: 192.168.1.105 | Decoys: 0
+[*] Target: 192.168.1.1 | 3 ports | ~5 pps | decoys: 0 | confirm: on | banner: on
+  [+] 192.168.1.1     22    open
+  [+] 192.168.1.1     80    open
+  [+] 192.168.1.1     443   open
+[*] 192.168.1.1: verifying 3 open ports...
+      -> 192.168.1.1     22    banner: SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.1
+      -> 192.168.1.1     80    banner: HTTP/1.1 200 OK (Server: nginx/1.18.0)
+[+] 192.168.1.1 scan finished in 4s (3/3 open): [22, 80, 443]
+[+] Scan complete. Found 3 open ports in total.
+```
 
 ---
 
@@ -80,8 +111,8 @@ Scan progress is serialized incrementally (`.synscan_state.json`). Interruptions
 Clone the repository and install locally:
 
 ```bash
-git clone https://github.com/mehmetkozan/synscan.git
-cd synscan
+git clone https://github.com/MehmetKozann/stealth-synscan.git
+cd stealth-synscan
 sudo python3 synscan.py --help
 ```
 
